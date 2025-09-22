@@ -1,0 +1,124 @@
+import { test, expect } from "../../../generic/extendedTest";
+
+const BASE_URL = process.env.BASE_URL || "https://example-base-url"; 
+
+async function getAuthHeader() {
+  const token = process.env.AUTH_TOKEN || "dummy-token"; // replace with dynamic call if needed
+  return { Authorization: `Bearer ${token}` };
+}
+
+// 1. Sample GET with path + query params // Demonstrates: query string, custom headers, response assertions // Skipped by default; remove test.skip -> test if you want it to run
+
+test.skip(
+  `GET user account details with valid Auth`,
+  { tag: ["@apiUITest", "@get"] },
+  async ({ request }) => {
+    const authHeader = await getAuthHeader();
+    const userId = "12345"; // sample path param
+    const queryParams = new URLSearchParams({ include: "profile,roles", locale: "en_US" });
+
+    const response = await request.get(
+      `${BASE_URL}/api/users/${userId}?${queryParams.toString()}`,
+      {
+        headers: {
+          ...authHeader,
+          "x-request-id": `rid-${Date.now()}`,
+          Accept: "application/json",
+        },
+        timeout: 15_000,
+        failOnStatusCode: false, // we manually assert
+      },
+    );
+
+    expect(response.status(), "Status should be 200").toBe(200);
+    const json = await response.json();
+    expect(json).toHaveProperty("id", userId);
+    expect(json).toHaveProperty("profile");
+  },
+);
+
+// 2. Sample POST demonstrating JSON body + assertions
+
+test.skip(
+  `POST verify user identity channel`,
+  { tag: ["@apiUITest", "@post"] },
+  async ({ request }) => {
+    const authHeader = await getAuthHeader();
+
+    const payload = {
+      channel: "SMS",
+      value: "+15551234567",
+      meta: {
+        device: "chrome",
+        ts: new Date().toISOString(),
+      },
+    };
+
+    const response = await request.post(
+      `${BASE_URL}/api/forgots-service/v1/password/channels/verify`,
+      {
+        headers: {
+          ...authHeader,
+          "content-type": "application/json",
+        },
+        data: payload,
+        timeout: 20_000,
+      },
+    );
+
+    expect(response.ok(), `Unexpected status: ${response.status()}`).toBeTruthy();
+    const body = await response.json();
+    expect(body).toMatchObject({ channel: payload.channel });
+    expect(body).toHaveProperty("transactionId");
+  },
+);
+
+// 3. Sample PUT with optimistic concurrency header (If-Match) & handling 412
+
+test.skip(
+  `PUT update user profile with ETag handling`,
+  { tag: ["@apiUITest", "@put"] },
+  async ({ request }) => {
+    const authHeader = await getAuthHeader();
+    const userId = "12345";
+
+    // First, GET to obtain ETag (simulated). In real API, check headers()['etag']
+    const getResp = await request.get(`${BASE_URL}/api/users/${userId}`, { headers: { ...authHeader } });
+    expect(getResp.ok()).toBeTruthy();
+    const etag = getResp.headers()["etag"] || "\"fake-etag-value\""; // placeholder fallback
+
+    const updatePayload = {
+      profile: {
+        firstName: "Updated",
+        lastName: "User",
+        locale: "en_US",
+      },
+    };
+
+    const putResp = await request.put(
+      `${BASE_URL}/api/users/${userId}`,
+      {
+        headers: {
+          ...authHeader,
+          "content-type": "application/json",
+          "if-match": etag,
+        },
+        data: updatePayload,
+        timeout: 20_000,
+        failOnStatusCode: false, // handle 412 manually
+      },
+    );
+
+    if (putResp.status() === 412) {
+      test.info().annotations.push({ type: "warning", description: "Precondition Failed - stale ETag" });
+    } else {
+      expect(putResp.ok(), `Expected 2xx, got ${putResp.status()}`).toBeTruthy();
+      const updated = await putResp.json();
+      expect(updated.profile).toMatchObject(updatePayload.profile);
+    }
+  },
+);
+
+// 4. Example showing how to parameterize via env
+// Usage: BASE_URL=https://real-host AUTH_TOKEN=abc npx playwright test specs/royale/api/requestfixture.spec.ts --headed
+// Remove skips above when endpoints are real.
