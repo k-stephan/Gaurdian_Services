@@ -1,0 +1,2175 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red27\green89\blue116;\red0\green0\blue0;\red124\green0\blue16;
+\red0\green0\blue255;\red0\green0\blue90;\red82\green60\blue22;\red137\green0\blue200;\red21\green101\blue54;
+\red221\green0\blue10;\red19\green96\blue2;}
+{\*\expandedcolortbl;;\cssrgb\c12549\c42353\c52941;\cssrgb\c0\c0\c0;\cssrgb\c56471\c392\c7059;
+\cssrgb\c0\c0\c100000;\cssrgb\c0\c0\c42745;\cssrgb\c39608\c29804\c11373;\cssrgb\c61569\c0\c82353;\cssrgb\c7451\c46275\c27451;
+\cssrgb\c90196\c0\c2353;\cssrgb\c5882\c43922\c392;}
+\margl1440\margr1440\vieww30040\viewh16280\viewkind0
+\deftab720
+\pard\pardeftab720\sl256\partightenfactor0
+
+\f0\fs32 \cf2 \expnd0\expndtw0\kerning0
+@Library\cf3 ([\cf4 'abc-jenkins'\cf3 , \cf4 'aim-pipeline-library@aim_qa_library'\cf3 ]) _
+\f1 \
+
+\f0 \cf5 import\cf3  \cf5 com.abc.aim.pipeline.EmailReportService
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \cf5 def\cf3  \cf6 emailService
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \cf5 def\cf3  \cf7 getTestCaseScenariosByType\cf3 () \{
+\f1 \
+
+\f0 \'a0\'a0\'a0 \cf5 def\cf3  SINGLE_API_TEST_LIST = \cf4 "[ 'na-oidc-existent-connection', 'na-oidc-new-connection', 'na-oidc-adm-existent-connection', 'na-oidc-adm-new-connection', 'emea-oidc-existent-connection', 'emea-oidc-new-connection', 'na-saml-existent-connection', 'na-saml-new-connection', 'na-saml-adm-existent-connection', 'na-saml-adm-new-connection', 'emea-saml-existent-connection', 'emea-saml-new-connection' ]"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0 \cf5 def\cf3  SINGLE_UI_TEST_LIST = \cf4 "[ 'na-client-onboarding-ui', 'emea-client-onboarding-ui', 'apac-client-onboarding-ui', 'na-oidc-corp-new-sederation-setup-ui', 'na-oidc-admin-new-sederation-setup-ui', 'emea-oidc-corp-new-sederation-setup-ui', 'emea-oidc-admin-new-sederation-setup-ui', 'na-saml-corp-new-sederation-setup-ui', 'na-saml-admin-new-sederation-setup-ui', 'emea-saml-corp-new-sederation-setup-ui', 'emea-saml-admin-new-sederation-setup-ui', 'na-admin-new-user-provision-ui', 'na-admin-new-user-not-provisioned-deprovision-ui', 'na-admin-new-user-search-all-deprovision-ui', 'na-corp-existent-user-fifth-search-by-all-fields-deprovision-ui', 'na-corp-existent-users-first-fifth-deprovision-ui', 'na-corp-existent-users-pagination-deprovision-ui', 'na-corp-extend-users-pagination-deprovision-ui', 'na-corp-nonexistent-user-deprovision-ui', 'na-corp-existent-user-change-pid-by-name-ui', 'na-corp-existent-user-change-pid-by-employeeId-ui' ]"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0 \cf5 def\cf3  GROUP_API_TEST_LIST = \cf4 "[ 'all-existent-connections', 'all-new-connections', 'oidc-regression', 'saml-regression', 'mobile-sederation' ]"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0 \cf5 def\cf3  GROUP_UI_TEST_LIST = \cf4 "[ 'all-tests-ui', 'all-client-onboarding-ui', 'all-sederation-setup-ui', 'all-user-setup-ui' ]"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0 \cf5 def\cf3  UTILS_TEST_LIST = \cf4 "[ 'clean-okta', 'validate-credentials' ]"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0 \cf5 def\cf3  PIPELINE_UTILS_TEST_LIST = \cf4 "[ 'validate-pipeline' ]"
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0 \cf8 return\cf3  \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 if (TYPE.equals('NO-HARM')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return [ 'all-connections' ]
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else if (TYPE.equals('REGRESSION')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return [ 'regression' ]
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else if (TYPE.equals('CO-MOBILE-sederation')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return [ 'mobile-sederation' ]
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else if (TYPE.equals('CO-L7')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return [ 'na-oidc-new-connection' ]
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else if (TYPE.equals('CO-SITEMINDER')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return [ 'na-saml-new-connection' ]
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else if (TYPE.equals('SINGLE-API')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return \cf5 $\{\cf3 SINGLE_API_TEST_LIST\cf5 \}
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else if (TYPE.equals('SINGLE-UI')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return \cf5 $\{\cf3 SINGLE_UI_TEST_LIST\cf5 \}
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else if (TYPE.equals('GROUP-API')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return \cf5 $\{\cf3 GROUP_API_TEST_LIST\cf5 \}
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else if (TYPE.equals('GROUP-UI')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return \cf5 $\{\cf3 GROUP_UI_TEST_LIST\cf5 \}
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else if (TYPE.equals('UTILS')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return \cf5 $\{\cf3 UTILS_TEST_LIST\cf5 \}\cf4 \'a0\'a0 
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else if (TYPE.equals('PIPELINE')) \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return \cf5 $\{\cf3 PIPELINE_UTILS_TEST_LIST\cf5 \}
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} else \{
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 return [ 'Could not get tests' ]
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \}
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 properties([
+\f1 \
+
+\f0 \'a0\'a0\'a0 parameters([
+\f1 \
+
+\f0 \'a0\'a0\'a0 choice(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 name: \cf4 'Env'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 description: \cf4 'choose respective ENV/DC for axo-domain services, choose respective CG ENV for forward sync tests'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 choices: [\cf4 'FIT'\cf3 , \cf4 'DIT'\cf3 , \cf4 'DEV'\cf3 , \cf4 'IPE'\cf3 , \cf4 'IATDC1'\cf3 , \cf4 'IATDC2'\cf3 ,\cf4 'UATDC2'\cf3 ,\cf4 'PRODDC1'\cf3 ,\cf4 'PRODDC2'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'CG_axo_DIT'\cf3 , \cf4 'CG_axo_FIT'\cf3 , \cf4 'CG_axo_IPE'\cf3 , \cf4 'CG_axo_IAT'\cf3 , \cf4 'CG_axo_UAT'\cf3 , \cf4 'CG_axo_PROD'\cf3 ,\cf4 'ALL'\cf3 ,\cf4 'OKTA'\cf3 ]
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 booleanParam(name: \cf4 'Run_axo_APIs'\cf3 , defaultValue: \cf5 false\cf3 , description: \cf4 'Check to run Domain Services-axo APIs job'\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 booleanParam(name: \cf4 'Run_Test_E2E'\cf3 , defaultValue: \cf5 false\cf3 , description: \cf4 'Run watchwomen axeman API Automation E2E Tests'\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 choice(name: \cf4 'Test_E2E'\cf3 , description: \cf4 'choose service to run tests'\cf3 , choices: [\cf4 'oid-service'\cf3 , \cf4 'internal-application-service'\cf3 ]),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 booleanParam(name: \cf4 'axo_No_Harm_axeman_API_Tests'\cf3 , defaultValue: \cf5 false\cf3 , description: \cf4 'axo_No Harm_axeman_API_Tests'\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 [$class: \cf4 'ExtendedChoiceParameterDefinition'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 name: \cf4 'axo_No Harm_axeman_API_Tests'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 type: \cf4 'PT_CHECKBOX'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 multiSelectDelimiter: \cf4 ','\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 description: \cf4 'Choose one or more applications to test'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 value: \cf4 'account-service,api-gateway,password-management-servicecim,ALL'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 booleanParam(name: \cf4 'Run_watchwomen_UI_Job'\cf3 , defaultValue: \cf5 false\cf3 , description: \cf4 'Check to run watchwomen UI Child Job'\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 choice(name: \cf4 'test'\cf3 , choices: [\cf4 '@spInitiated'\cf3 , \cf4 '@crsso'\cf3 , \cf4 '@all'\cf3 , \cf4 '@crssoAuthorization'\cf3 , \cf4 '@crssoSignInService'\cf3 , \cf4 '@crssoMarketplace'\cf3 , \cf4 '@universalSignin'\cf3 ], description: \cf4 'Select the test'\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 choice(name: \cf4 'envToRun'\cf3 , choices: [\cf4 'local'\cf3 , \cf4 'saucelabs'\cf3 ], description: \cf4 'Select the environment to run.'\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 booleanParam(name: \cf4 'Run_Risk_Assessment_Job'\cf3 , defaultValue: \cf5 false\cf3 , description: \cf4 'Run Risk Assessment Service Automation Child Job'\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 choice(name: \cf4 'Version'\cf3 , choices: [\cf4 'v1'\cf3 ,\cf4 'v2'\cf3 ]),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 booleanParam(name: \cf4 'RUN_sederation_TESTS'\cf3 , defaultValue: \cf5 false\cf3 , description: \cf4 'Run sederation Child Tests'\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 choice(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 name: \cf4 'TYPE'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 description: \cf4 'Type of test to run'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 choices: [\cf4 'NO-HARM'\cf3 , \cf4 'REGRESSION'\cf3 , \cf4 'CO-MOBILE-sederation'\cf3 , \cf4 'CO-L7'\cf3 , \cf4 'CO-SITEMINDER'\cf3 , \cf4 'SINGLE-API'\cf3 , \cf4 'SINGLE-UI'\cf3 , \cf4 'GROUP-API'\cf3 , \cf4 'GROUP-UI'\cf3 , \cf4 'UTILS'\cf3 , \cf4 'PIPELINE'\cf3 ]
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 [$class: \cf4 'CascadeChoiceParameter'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 choiceType: \cf4 'PT_SINGLE_SELECT'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 description: \cf4 'Select test'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 filterLength: \cf9 1\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 filterable: \cf5 true\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 name: \cf4 'TEST'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 referencedParameters: \cf4 'TYPE'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script: [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 $class: \cf4 'GroovyScript'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 fallbackScript: [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 classpath: [],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 sandbox: \cf5 true\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script: \cf4 "return [ 'Could not get tests' ]"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script: [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 classpath: [],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 sandbox: \cf5 true\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script: getTestCaseScenariosByType()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ]
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ]
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Notification_Email'\cf3 , defaultValue: \cf4 'stephan.raju.kombathula@abc.com'\cf3 , description: \cf4 'Email to notify on axo\'a0 NO HARM job completion'\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0 ])
+\f1 \
+
+\f0 ])
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 pipeline \{
+\f1 \
+
+\f0 \'a0\'a0\'a0 agent \{ label \cf4 'docker'\cf3  \}
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0 stages \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 stage(\cf4 'Initialize'\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 steps \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailService = \cf8 new\cf3  \cf2 EmailReportService\cf3 (\cf5 this\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 stage(\cf4 'Parallel Jobs-1'\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 parallel \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 stage(\cf4 'Domain Services-axo APIs'\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 when \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 expression \{ \cf2 params.Run_axo_APIs\cf3  \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 steps \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 catchError(buildResult: \cf4 'UNSTABLE'\cf3 , stageResult: \cf4 'FAILURE'\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 printSeparator(\cf5 this\cf3 , \cf4 'Domain Services'\cf3 , \cf4 'START'\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.SEPARATOR\cf5 \}\cf4 ------------------------ Starting Domain Services Job ------------------------\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[Domain Services-axo APIs] Starting downstream job...\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.DOMAIN_SERVICES\cf5 \}\cf4 [Domain Services] Starting job execution...\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.DOMAIN_SERVICES\cf5 \}\cf4 [Domain Services] Environment: \cf5 $\{\cf3 params.Env\cf5 \}$\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  timeDelay = \cf4 '2000'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 if\cf3  (!(\cf2 params.Env\cf3  in [\cf4 'FIT'\cf3 , \cf4 'DIT'\cf3 , \cf4 'DEV'\cf3 , \cf4 'IPE'\cf3 , \cf4 'IATDC1'\cf3 , \cf4 'IATDC2'\cf3 ,\cf4 'UATDC2'\cf3 ,\cf4 'PRODDC1'\cf3 ,\cf4 'PRODDC2'\cf3 ])) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 timeDelay = \cf4 '2500'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[36mJob: \cf5 $\{\cf3 env.JOB_NAME\cf5 \}\cf4  | Stage: Domain Services-axo APIs | Running on agent: \cf5 $\{\cf3 env.NODE_NAME\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[33mUsing time delay: \cf5 $\{\cf3 timeDelay\cf5 \}\cf4  ms for Env: \cf5 $\{\cf3 params.Env\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  startTime = \cf8 new\cf3  \cf2 Date\cf3 ().format(\cf4 "yyyy-MM-dd HH:mm:ss"\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  stageStartTime = \cf2 System\cf3 .currentTimeMillis()
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 try\cf3  \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  jaxBuild = build job: \cf4 'AIM_QA/jenkins-axoSmokeTest-docker'\cf3 , parameters: [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Env'\cf3 , value: \cf2 params.Env\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Time'\cf3 , value: timeDelay)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ], wait: \cf5 true
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[32mSUCCESS: Downstream job completed successfully.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  duration = \cf4 "\cf5 $\{\cf3 (System.currentTimeMillis() - stageStartTime) / 1000\cf5 \}\cf4 s"
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  DOMAIN_RESULT = getBuildResult(jaxBuild)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.DOMAIN_RESULT=DOMAIN_RESULT
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.DOMAIN_URL = jaxBuild.absoluteUrl
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.DOMAIN_DURATION = duration
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.DOMAIN_START_TIME = startTime
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "Domain Services Build Result: \cf5 $\{\cf3 env.DOMAIN_RESULT\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} \cf8 catch\cf3  (err) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[31mERROR: Downstream job failed! Reason: \cf5 $\{\cf3 err\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  duration = \cf4 "\cf5 $\{\cf3 (System.currentTimeMillis() - stageStartTime) / 1000\cf5 \}\cf4 s"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.DOMAIN_RESULT = \cf4 'FAILURE'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.DOMAIN_URL = \cf4 ''
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 // Capture detailed error information
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailService.captureJobError(\cf4 'DOMAIN'\cf3 , err.message, duration, startTime)
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 throw\cf3  err
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 post \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 always \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 printSeparator(\cf5 this\cf3 , \cf4 'Domain Services'\cf3 , \cf4 'COMPLETED'\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.SEPARATOR\cf5 \}\cf4 ------------------------ Completed Domain Services Job ------------------------\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 if\cf3  (!\cf2 params.Run_axo_APIs\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "Domain Services-axo APIs - SKIPPED"\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 "Domain Services-axo APIs was skipped as Run_axo_APIs is false.<br>Build: \cf5 $\{\cf3 env.BUILD_URL ?: (currentBuild?.absoluteUrl ?: 'N/A')\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 success \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[Domain Services-axo APIs] Stage succeeded.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.DOMAIN_SERVICES\cf5 \}\cf4 [Domain Services] Stage succeeded\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "Domain Services-axo APIs - SUCCESS - \cf5 $\{\cf3 params.Env\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Environment:\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 $\{\cf3 params.Env\cf5 \}\cf4 </td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Result:\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 SUCCESS</td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Job:\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 Domain Services-axo APIs</td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 failure \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[Domain Services-axo APIs] Stage failed.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.DOMAIN_SERVICES\cf5 \}\cf4 [Domain Services] Stage failed\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "Domain Services-axo APIs - FAILURE - \cf5 $\{\cf3 params.Env\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Environment:\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 $\{\cf3 params.Env\cf5 \}\cf4 </td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Result:\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 FAILURE</td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Job:\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 Domain Services-axo APIs</td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}\cf11 //post
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}\cf11 //domain
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 stage(\cf4 'Run sederation SSO Tests'\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 when \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 expression \{ params.RUN_sederation_TESTS \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 steps \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 catchError(buildResult: \cf4 'UNSTABLE'\cf3 , stageResult: \cf4 'FAILURE'\cf3 ) \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 printSeparator(\cf5 this\cf3 , \cf4 'axo No Harm-Federated SSO'\cf3 , \cf4 'START'\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.sederation\cf5 \}\cf4 [sederation] Starting sederation SSO tests...\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.sederation\cf5 \}\cf4 [sederation] Test: \cf5 $\{\cf3 params.TEST\cf5 \}$\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.sederation\cf5 \}\cf4 [sederation] Type: \cf5 $\{\cf3 params.TYPE\cf5 \}$\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.sederation\cf5 \}\cf4 [sederation] Type: \cf5 $\{\cf3 params.Env\cf5 \}$\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 // Trigger the dashboard E2E automation child job
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  startTime = \cf8 new\cf3  \cf2 Date\cf3 ().format(\cf4 "yyyy-MM-dd HH:mm:ss"\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  stageStartTime = \cf2 System\cf3 .currentTimeMillis()
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 try\cf3 \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  sederationsso = build job: \cf4 'AIM/fedsso-dashboard-e2e-automation/feature%2FAIM-qa'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 parameters: [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'TEST'\cf3 , value: params.TEST),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'ENV'\cf3 , value: \cf2 params.Env\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'EMAIL_REPORT'\cf3 , value: \cf2 params.Notification_Email\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'BRANCH_NAME'\cf3 , value: \cf4 'feature/AIM-qa'\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 propagate: \cf5 true\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 wait: \cf5 true
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  duration = \cf4 "\cf5 $\{\cf3 (System.currentTimeMillis() - stageStartTime) / 1000\cf5 \}\cf4 s"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.fedsso_result = getBuildResult(sederationsso)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.fedsso_absoluteUrl = sederationsso.absoluteUrl
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.fedsso_DURATION = duration
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.fedsso_START_TIME = startTime
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "sederation SSO job result: \cf5 $\{\cf3 env.fedsso_result\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "sederation SSO\'a0 job URL: \cf5 $\{\cf3 env.fedsso_absoluteUrl\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 catch\cf3  (err) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  duration = \cf4 "\cf5 $\{\cf3 (System.currentTimeMillis() - stageStartTime) / 1000\cf5 \}\cf4 s"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.fedsso_result = \cf4 'FAILURE'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.fedsso_absoluteUrl = \cf4 ''
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 // Capture detailed error information
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailService.captureJobError(\cf4 'FedSSO'\cf3 , err.message, duration, startTime)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 throw\cf3  err
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 
+\f1 \
+
+\f0 \'a0\'a0\'a0 
+\f1 \
+
+\f0 \'a0\'a0\'a0 post \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 success \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "FedSSO\'a0 Job SUCCESS - \cf5 $\{\cf3 params.TEST\cf5 \}\cf4  - \cf5 $\{\cf3 params.Env\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 "sederation SSO job completed successfully.<br>Test: \cf5 $\{\cf3 params.TEST\cf5 \}\cf4 <br>Env: \cf5 $\{\cf3 params.Env\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 failure \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "FedSSO\'a0 Job FAILURE - \cf5 $\{\cf3 params.TEST\cf5 \}\cf4  - \cf5 $\{\cf3 params.Env\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 "sederation SSO job failed.<br>Test: \cf5 $\{\cf3 params.TEST\cf5 \}\cf4 <br>Env: \cf5 $\{\cf3 params.Env\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0 \}\cf11 //sederation Close
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 stage(\cf4 'Platoon axo axeman Automation'\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 when \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 expression \{ \cf2 params.axo_No_Harm_axeman_API_Tests\cf3  \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 steps \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 catchError(buildResult: \cf4 'UNSTABLE'\cf3 , stageResult: \cf4 'FAILURE'\cf3 ) \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 printSeparator(\cf5 this\cf3 , \cf4 'Platoon axo axeman Automation'\cf3 , \cf4 'START'\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.SEPARATOR\cf5 \}\cf4 ------------------------ Starting axeman Automation Job ------------------------\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.axeman\cf5 \}\cf4 [Platoon axeman] Starting Platoon axeman Automation...\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.axeman\cf5 \}\cf4 [Platoon axeman] Job: \cf5 $\{\cf3 env.JOB_NAME\cf5 \}\cf4  | Running on agent: \cf5 $\{\cf3 env.NODE_NAME\cf5 \}$\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  platoonEnvMap = [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'FIT'\cf3  : \cf4 'na-fit'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'DIT'\cf3  : \cf4 'na-dit'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'IATDC1'\cf3  : \cf4 'na-dc1-iat'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'UATDC2'\cf3  : \cf4 'na-dc2-uat'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'PRODDC1'\cf3 : \cf4 'na-dc1-prod'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ]
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  platoonEnv = platoonEnvMap[\cf2 params.Env\cf3 ]
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  allowedPlatoon = [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'na-dit'\cf3 : [\cf4 'account-service'\cf3 , \cf4 'api-gateway'\cf3 , \cf4 'password-management-service'\cf3 , \cf4 'ALL'\cf3 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'na-fit'\cf3 : [\cf4 'account-service'\cf3 , \cf4 'api-gateway'\cf3 , \cf4 'password-management-service'\cf3 , \cf4 'ALL'\cf3 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'na-dc1-iat'\cf3 : [\cf4 'account-service'\cf3 , \cf4 'api-gateway'\cf3 , \cf4 'password-management-service'\cf3 , \cf4 'ALL'\cf3 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'na-dc2-uat'\cf3 : [\cf4 'account-service'\cf3 , \cf4 'api-gateway'\cf3 , \cf4 'password-management-service'\cf3 , \cf4 'ALL'\cf3 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf4 'na-dc1-prod'\cf3 : [\cf4 'account-service'\cf3 , \cf4 'api-gateway'\cf3 , \cf4 'password-management-service'\cf3 , \cf4 'ALL'\cf3 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ]
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  envToRun = platoonEnv
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  testsToRun = params[\cf4 "axo_No Harm_axeman_API_Tests"\cf3 ]?.tokenize(\cf4 ','\cf3 ) ?: [] 
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  notAllowed = testsToRun.findAll \{ !(it in (allowedPlatoon[envToRun] ?: [])) \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 if\cf3  (notAllowed) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 error \cf4 "Test(s) '\cf5 $\{\cf3 notAllowed.join(', ')\cf5 \}\cf4 ' not allowed for environment '\cf5 $\{\cf3 envToRun\cf5 \}\cf4 '. Allowed: \cf5 $\{\cf3 (allowedPlatoon[envToRun] ?: []).join(', ')\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 // --- END VALIDATION LOGIC ---
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 //def causes = currentBuild.getBuildCauses()
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 //def BUILD_TRIGGER_USER = causes ? causes[0]?.shortDescription : ""
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  RUN_TEST = \cf5 true
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 //def BUILD_TRIGGER_BY = ""
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 // Store in env for use in post blocks and summary
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.axeman_ENV = envToRun
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.axeman_TEST = params[\cf4 "axo_No Harm_axeman_API_Tests"\cf3 ]
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 //\'a0 env.axeman_TRIGGER = BUILD_TRIGGER_BY
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[33maxeman ENV: \cf5 $\{\cf3 env.axeman_ENV.toLowerCase()\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[33maxeman TEST: \cf5 $\{\cf3 env.axeman_TEST\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[33maxeman TRIGGER: \cf5 $\{\cf3 env.axeman_TRIGGER\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  startTime = \cf8 new\cf3  \cf2 Date\cf3 ().format(\cf4 "yyyy-MM-dd HH:mm:ss"\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  stageStartTime = \cf2 System\cf3 .currentTimeMillis()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 try\cf3 \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  axemanBuild = build job: \cf4 'AIM/aim-axeman-e2e-automation/feature%2Faim_qa'\cf3 , parameters: [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Env'\cf3 , value: env.axeman_ENV),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Test'\cf3 , value: env.axeman_TEST),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 // string(name: 'BUILD_TRIGGER_BY', value: env.axeman_TRIGGER),
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 booleanParam(name: \cf4 'RunTest'\cf3 , value: RUN_TEST)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ],\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 wait: \cf5 true
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  duration = \cf4 "\cf5 $\{\cf3 (System.currentTimeMillis() - stageStartTime) / 1000\cf5 \}\cf4 s"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 // Store results properly
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.axeman_RESULT = getBuildResult(axemanBuild)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.axeman_URL = axemanBuild.absoluteUrl
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.axeman_DURATION = duration
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.axeman_START_TIME = startTime
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 catch\cf3  (err) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  duration = \cf4 "\cf5 $\{\cf3 (System.currentTimeMillis() - stageStartTime) / 1000\cf5 \}\cf4 s"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.axeman_RESULT = \cf4 'FAILURE'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.axeman_URL = \cf4 ''
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 // Capture detailed error information
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailService.captureJobError(\cf4 'axeman_API'\cf3 , err.message, duration, startTime)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 throw\cf3  err
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} 
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 post \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 always \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.SEPARATOR\cf5 \}\cf4 ------------------------ Completed axeman Automation Job ------------------------\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 if\cf3  (!\cf2 params.axo_No_Harm_axeman_API_Tests\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "Platoon axeman Automation - SKIPPED"\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 "Platoon axeman Automation was skipped as CG_axeman_APIs is false.\cf10 \\n\cf4 Build: \cf5 $\{\cf3 env.BUILD_URL ?: (currentBuild?.absoluteUrl ?: 'N/A')\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 success \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[35m[Platoon axo axeman Automation] Stage succeeded.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "axeman Automation Report - \cf5 $\{\cf3 env.axeman_TEST\cf5 \}\cf4  - \cf5 $\{\cf3 (env.axeman_ENV ? env.axeman_ENV.toLowerCase() : 'unknown')\cf5 \}\cf4  - SUCCESS"\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Executed By:\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 $\{\cf3 env.axeman_TRIGGER\cf5 \}\cf4 </td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Test:\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 $\{\cf3 env.axeman_TEST\cf5 \}\cf4 </td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Environment:\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 $\{\cf3 env.axeman_ENV\cf5 \}\cf4 </td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 failure \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[35m[Platoon axo axeman Automation] Stage failed.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "axeman Automation Report - \cf5 $\{\cf3 env.axeman_TEST\cf5 \}\cf4  - \cf5 $\{\cf3 (env.axeman_ENV ? env.axeman_ENV.toLowerCase() : 'unknown')\cf5 \}\cf4  - FAILURE"\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Executed By:\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 $\{\cf3 env.axeman_TRIGGER\cf5 \}\cf4 </td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Test:\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 $\{\cf3 env.axeman_TEST\cf5 \}\cf4 </td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <tr><td>Environment:\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 $\{\cf3 env.axeman_ENV\cf5 \}\cf4 </td></tr>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \} \cf11 // closes axeman
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}\cf11 //parallel
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}\cf11 //stage parallel-1
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 stage(\cf4 'Parallel Jobs-2'\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 parallel \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 stage(\cf4 'Trigger watchwomen axeman Automation E2E Tests'\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 when \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 expression \{ \cf2 params.Run_Test_E2E\cf3  \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 steps \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 catchError(buildResult: \cf4 'UNSTABLE'\cf3 , stageResult: \cf4 'FAILURE'\cf3 ) \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 printSeparator(\cf5 this\cf3 , \cf4 'watchwomen axeman Automation E2E Tests'\cf3 , \cf4 'START'\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[38;5;93m[watchwomen axeman E2E] Starting watchwomen axeman API Automation E2E Tests...\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.watchwomen_E2E\cf5 \}\cf4 [watchwomen E2E] Starting E2E tests...\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.watchwomen_E2E\cf5 \}\cf4 [watchwomen E2E] Test: \cf5 $\{\cf3 params.Test_E2E\cf5 \}$\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 try\cf3  \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  testToRun = \cf2 params.Test_E2E
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  childBuild = build(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 job: \cf4 'AIM/watchwomen-axeman-e2e-automation/feature%2Faim_qa'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 parameters: [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Env'\cf3 , value: \cf2 params.Env\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Test'\cf3 , value: testToRun),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'emailRecipient'\cf3 , value: \cf2 params.Notification_Email\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 propagate: \cf5 false\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 wait: \cf5 true
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.CHILD_RESULT = getBuildResult(childBuild)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.CHILD_URL = childBuild.absoluteUrl
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.CHILD_ENV = \cf2 params.Env
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.CHILD_TEST = \cf2 params.Test_E2E
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "watchwomen-axeman-e2e-automation\'a0 job result: \cf5 $\{\cf3 env.CHILD_RESULT\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} \cf8 catch\cf3  (err) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.CHILD_RESULT = \cf4 'FAILURE'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.CHILD_URL = \cf4 ''
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.CHILD_ENV = \cf2 params.Env
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.CHILD_TEST = \cf2 params.Test_E2E
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 error(\cf4 "Child job failed: \cf5 $\{\cf3 err\cf5 \}\cf4 "\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} 
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} \cf11 //catch error
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} \cf11 //steps
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 post \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 always \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[38;5;93m[watchwomen axeman E2E] Stage completed.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.SEPARATOR\cf5 \}\cf4 ------------------------ Completed\'a0 watchwomen Automation E2E Job ------------------------\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 currentBuild.description = \cf4 "\cf5 $\{\cf3 env.CHILD_TEST\cf5 \}\cf4  - \cf5 $\{\cf3 env.CHILD_ENV\cf5 \}\cf4  (\cf5 $\{\cf3 env.CHILD_RESULT\cf5 \}\cf4 )"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 success \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[38;5;93m[watchwomen axeman E2E] Stage succeeded.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "PARENT: watchwomen axeman API Automation - \cf5 $\{\cf3 env.CHILD_TEST\cf5 \}\cf4  - \cf5 $\{\cf3 env.CHILD_ENV\cf5 \}\cf4  - \cf5 $\{\cf3 env.CHILD_RESULT\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Parent Pipeline completed successfully.</b><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Child Job:</b> <a href="\cf5 $\{\cf3 env.CHILD_URL\cf5 \}\cf4 ">\cf5 $\{\cf3 env.CHILD_URL\cf5 \}\cf4 </a><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Test:</b> \cf5 $\{\cf3 env.CHILD_TEST\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Environment:</b> \cf5 $\{\cf3 env.CHILD_ENV\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Result:</b> \cf5 $\{\cf3 env.CHILD_RESULT\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 failure \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[38;5;93m[watchwomen axeman E2E] Stage failed.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "PARENT: watchwomen axeman API Automation - \cf5 $\{\cf3 env.CHILD_TEST\cf5 \}\cf4  - \cf5 $\{\cf3 env.CHILD_ENV\cf5 \}\cf4  - \cf5 $\{\cf3 env.CHILD_RESULT\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Parent Pipeline FAILED.</b><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Child Job:</b> <a href="\cf5 $\{\cf3 env.CHILD_URL\cf5 \}\cf4 ">\cf5 $\{\cf3 env.CHILD_URL\cf5 \}\cf4 </a><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Test:</b> \cf5 $\{\cf3 env.CHILD_TEST\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Environment:</b> \cf5 $\{\cf3 env.CHILD_ENV\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Result:</b> \cf5 $\{\cf3 env.CHILD_RESULT\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\} \cf11 // closes axeman\'a0 Automation E2E
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0stage(\cf4 'Trigger watchwomen UI Job'\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0 when \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 expression \{ \cf2 params.Run_watchwomen_UI_Job\cf3  \}
+\f1 \
+
+\f0 \'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0 steps \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 catchError(buildResult: \cf4 'UNSTABLE'\cf3 , stageResult: \cf4 'FAILURE'\cf3 ) \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[38;5;93m[watchwomen axeman E2E] Starting watchwomen axeman UI\'a0 Automation\'a0 Tests...\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "Job: \cf5 $\{\cf3 env.JOB_NAME\cf5 \}\cf4  | Stage: watchwomen UI\'a0 Automation axo | Running on agent: \cf5 $\{\cf3 env.NODE_NAME\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.watchwomen_UI\cf5 \}\cf4 [watchwomen UI] Starting UI automation...\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.watchwomen_UI\cf5 \}\cf4 [watchwomen UI] Test: \cf5 $\{\cf3 params.test\cf5 \}$\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 try\cf3 \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  watchwomenui = build job: \cf4 'axo/watchwomen-ui-automation/feature%2Faim_qa'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 parameters: [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'test'\cf3 , value: params.test),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'environment'\cf3 , value: \cf2 params.Env\cf3 .toLowerCase()),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'envToRun'\cf3 , value: params.envToRun),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'emailReport'\cf3 , value: \cf2 params.Notification_Email\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 propagate: \cf5 true\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 wait: \cf5 true
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.UI_CHILD_RESULT = getBuildResult(watchwomenui)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.UI_CHILD_URL = watchwomenui.absoluteUrl
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.UI_CHILD_TEST = params.test
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.UI_CHILD_ENV = params.environment
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[watchwomen UI Parent] Child Result: \cf5 $\{\cf3 env.UI_CHILD_RESULT\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[watchwomen UI Parent] Child URL: \cf5 $\{\cf3 env.UI_CHILD_URL\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[watchwomen UI Parent] Child Test: \cf5 $\{\cf3 env.UI_CHILD_TEST\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[watchwomen UI Parent] Child Environment: \cf5 $\{\cf3 env.UI_CHILD_ENV\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 catch\cf3  (err) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.UI_CHILD_RESULT = \cf4 'FAILURE'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.UI_CHILD_URL = \cf4 ''
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 throw\cf3  err
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0 \} \cf11 //catch error
+\f1 \cf3 \
+
+\f0 \} \cf11 //steps
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0 post \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 always \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[watchwomen UI Parent] Stage completed.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.SEPARATOR\cf5 \}\cf4 ------------------------ Completed\'a0 watchwomen Automation UI Job ------------------------\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 currentBuild.description = \cf4 "\cf5 $\{\cf3 env.UI_CHILD_TEST\cf5 \}\cf4  - \cf5 $\{\cf3 env.UI_CHILD_ENV\cf5 \}\cf4  (\cf5 $\{\cf3 env.UI_CHILD_RESULT\cf5 \}\cf4 )"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 success \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[32m[watchwomen UI Parent] Stage succeeded.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "PARENT: watchwomen UI Automation - \cf5 $\{\cf3 env.UI_CHILD_TEST\cf5 \}\cf4  - \cf5 $\{\cf3 env.UI_CHILD_ENV\cf5 \}\cf4  - \cf5 $\{\cf3 env.UI_CHILD_RESULT\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Parent Pipeline completed successfully.</b><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Child Job:</b> <a href="\cf5 $\{\cf3 env.UI_CHILD_URL\cf5 \}\cf4 ">\cf5 $\{\cf3 env.UI_CHILD_URL\cf5 \}\cf4 </a><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Test:</b> \cf5 $\{\cf3 env.UI_CHILD_TEST\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Environment:</b> \cf5 $\{\cf3 env.UI_CHILD_ENV\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Result:</b> \cf5 $\{\cf3 env.UI_CHILD_RESULT\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 failure \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[31m[watchwomen UI Parent] Stage failed.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "PARENT: watchwomen UI Automation - \cf5 $\{\cf3 env.UI_CHILD_TEST\cf5 \}\cf4  - \cf5 $\{\cf3 env.UI_CHILD_ENV\cf5 \}\cf4  - \cf5 $\{\cf3 env.UI_CHILD_RESULT\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Parent Pipeline FAILED.</b><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Child Job:</b> <a href="\cf5 $\{\cf3 env.UI_CHILD_URL\cf5 \}\cf4 ">\cf5 $\{\cf3 env.UI_CHILD_URL\cf5 \}\cf4 </a><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Test:</b> \cf5 $\{\cf3 env.UI_CHILD_TEST\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Environment:</b> \cf5 $\{\cf3 env.UI_CHILD_ENV\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Result:</b> \cf5 $\{\cf3 env.UI_CHILD_RESULT\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0 \}\cf11 //watchwomen ui post
+\f1 \cf3 \
+
+\f0 \'a0\'a0 \}\cf11 //watchwomen ui
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 stage(\cf4 'Trigger Risk Assessment FSP Service Child Job'\cf3 ) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 when \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 expression \{ \cf2 params.Run_Risk_Assessment_Job\cf3  \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 steps \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 catchError(buildResult: \cf4 'UNSTABLE'\cf3 , stageResult: \cf4 'FAILURE'\cf3 ) \{
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.SEPARATOR\cf5 \}\cf4 ------------------------ Started\'a0 Risk Assessment FSP Service UI Job ------------------------\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[Risk Assessment Parent] Triggering child job: risk-assessment-service-automation\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.RISK\cf5 \}\cf4 [Risk Assessment] Starting risk assessment tests...\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.RISK\cf5 \}\cf4 [Risk Assessment] Version: \cf5 $\{\cf3 params.Version\cf5 \}$\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  riskJob
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 try\cf3  \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 riskJob = build job: \cf4 'AIM/risk-assessment-service-automation/master'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 parameters: [
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Task'\cf3 , value: \cf4 'NoHarmTests'\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Version'\cf3 , value: \cf2 params.Version\cf3 ),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Env'\cf3 , value: \cf2 params.Env\cf3 .toLowerCase()),
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 string(name: \cf4 'Branch'\cf3 , value: \cf4 'master'\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 ],
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 propagate: \cf5 true\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 wait: \cf5 true
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.RISK_CHILD_RESULT = getBuildResult(riskJob)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.RISK_CHILD_URL = riskJob.absoluteUrl
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "Risk Assessment FSP\'a0\'a0 job result: \cf5 $\{\cf3 env.RISK_CHILD_RESULT\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} \cf8 catch\cf3  (err) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.RISK_CHILD_RESULT = \cf4 'FAILURE'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.RISK_CHILD_URL = \cf4 'N/A'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[31m[Risk Assessment Parent] Child job failed to start or complete: \cf5 $\{\cf3 err\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.RISK_CHILD_TASK = \cf4 'NoHarmTests'
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 env.RISK_CHILD_ENV = \cf2 params.Env\cf3 .toLowerCase()
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[Risk Assessment Parent] Child Result: \cf5 $\{\cf3 env.RISK_CHILD_RESULT\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[Risk Assessment Parent] Child URL: \cf5 $\{\cf3 env.RISK_CHILD_URL\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[Risk Assessment Parent] Child Task: \cf5 $\{\cf3 env.RISK_CHILD_TASK\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[Risk Assessment Parent] Child Environment: \cf5 $\{\cf3 env.RISK_CHILD_ENV\cf5 \}\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 post \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 always \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[34m[Risk Assessment Parent] Stage completed.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  colors = \cf2 ColorUtils\cf3 ()
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf5 $\{\cf3 colors.SEPARATOR\cf5 \}\cf4 ------------------------ Completed\'a0 Risk Assessment FSP Service UI Job ------------------------\cf5 $\{\cf3 colors.RESET\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 currentBuild.description = \cf4 "\cf5 $\{\cf3 env.RISK_CHILD_TASK\cf5 \}\cf4  - \cf5 $\{\cf3 env.RISK_CHILD_ENV\cf5 \}\cf4  (\cf5 $\{\cf3 env.RISK_CHILD_RESULT\cf5 \}\cf4 )"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 success \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[32m[Risk Assessment Parent] Stage succeeded.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "PARENT: Risk Assessment Service Automation - \cf5 $\{\cf3 env.RISK_CHILD_TASK\cf5 \}\cf4  - \cf5 $\{\cf3 env.RISK_CHILD_ENV\cf5 \}\cf4  - \cf5 $\{\cf3 env.RISK_CHILD_RESULT\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Parent Pipeline completed successfully.</b><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Child Job:</b> <a href="\cf5 $\{\cf3 env.RISK_CHILD_URL\cf5 \}\cf4 ">\cf5 $\{\cf3 env.RISK_CHILD_URL\cf5 \}\cf4 </a><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Task:</b> \cf5 $\{\cf3 env.RISK_CHILD_TASK\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Environment:</b> \cf5 $\{\cf3 env.RISK_CHILD_ENV\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Result:</b> \cf5 $\{\cf3 env.RISK_CHILD_RESULT\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 failure \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "\cf10 \\u\cf4 001B[31m[Risk Assessment Parent] Stage failed.\cf10 \\u\cf4 001B[0m"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailext(
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 mimeType: \cf4 'text/html'\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 to: \cf2 params.Notification_Email\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 subject: \cf4 "PARENT: Risk Assessment Service Automation - \cf5 $\{\cf3 env.RISK_CHILD_TASK\cf5 \}\cf4  - \cf5 $\{\cf3 env.RISK_CHILD_ENV\cf5 \}\cf4  - \cf5 $\{\cf3 env.RISK_CHILD_RESULT\cf5 \}\cf4 "\cf3 ,
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 body: \cf4 """
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Parent Pipeline FAILED.</b><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Child Job:</b> <a href="\cf5 $\{\cf3 env.RISK_CHILD_URL\cf5 \}\cf4 ">\cf5 $\{\cf3 env.RISK_CHILD_URL\cf5 \}\cf4 </a><br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Task:</b> \cf5 $\{\cf3 env.RISK_CHILD_TASK\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Environment:</b> \cf5 $\{\cf3 env.RISK_CHILD_ENV\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 <b>Result:</b> \cf5 $\{\cf3 env.RISK_CHILD_RESULT\cf5 \}\cf4 <br>
+\f1 \cf3 \
+
+\f0 \cf4 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 """
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}\cf11 //fsp inception
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0 \}\cf11 //parallel-2
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}\cf11 //stage parallel-2
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0 \}\cf11 //stages
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 post \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 always \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 script \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf8 try\cf3  \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  total = getTotalJobs(\cf5 this\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  success = getSuccessfulJobs(\cf5 this\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  failed = getFailedJobs(\cf5 this\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  skipped = getSkippedJobs(\cf5 this\cf3 )
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "Total: \cf5 $\{\cf3 total\cf5 \}\cf4 , Success: \cf5 $\{\cf3 success\cf5 \}\cf4 , Failed: \cf5 $\{\cf3 failed\cf5 \}\cf4 , Skipped: \cf5 $\{\cf3 skipped\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf5 def\cf3  report = emailService.generateReport(params)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 emailService.sendEmail(params, report)
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "Successfully sent consolidated report"
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \} \cf8 catch\cf3  (e) \{
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 echo \cf4 "Failed to generate/send report: \cf5 $\{\cf3 e.message\cf5 \}\cf4 "
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \cf11 // Don't fail the build if report fails
+\f1 \cf3 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}
+\f1 \
+
+\f0 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \}\cf11 //consolidated post
+\f1 \cf3 \
+
+\f0 \}\cf11 //pipeline
+\f1 \cf3 \
+\pard\pardeftab720\sl256\sa213\partightenfactor0
+\cf3 \'a0\
+}
